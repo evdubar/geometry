@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Tight Rectilinear Hulls of Simple polygons</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    a.button-89 {
+  --b: 3px;   /* border thickness */
+  --s: .45em; /* size of the corner */
+  --color: #373B44;
+  
+  padding: calc(.5em + var(--s)) calc(.9em + var(--s));
+  color: var(--color);
+  --_p: var(--s);
+  background:
+    conic-gradient(from 90deg at var(--b) var(--b),#0000 90deg,var(--color) 0)
+    var(--_p) var(--_p)/calc(100% - var(--b) - 2*var(--_p)) calc(100% - var(--b) - 2*var(--_p));
+  transition: .3s linear, color 0s, background-color 0s;
+  outline: var(--b) solid #0000;
+  outline-offset: .6em;
+  font-size: 16px;
+
+  border: 0;
+
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-89:hover,
+.button-89:focus-visible{
+  --_p: 0px;
+  outline-color: var(--color);
+  outline-offset: .05em;
+}
+
+.button-89:active {
+  background: var(--color);
+  color: #fff;
+}
+  </style>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Tight Rectilinear Hulls of Simple polygons</h1>
+</header>
+<h1 id="introduction">Introduction</h1>
+<p>
+  From the article <a href="https://www1.pub.informatik.uni-wuerzburg.de/eurocg2020/data/uploads/papers/eurocg20_paper_83.pdf">Tight Rectilinear Hulls of Simple polygons</a>.
+<p>
+
+  <a href="http://127.0.0.1:5500/script.html" class ="button-89" > Algorithm</a>
+</p>
+  
+<p>The motivations of this algorithm is the simplifictation of a polygon
+  <span class="math inline">\(P\)</span> with a polygon <span
+  class="math inline">\(Q\)</span>, where <span
+  class="math inline">\(Q\)</span> is simple, <span
+  class="math inline">\(\mathcal{C}\)</span>-oriented, contains <span
+  class="math inline">\(P\)</span> and cannot be shrunk. Some application
+  of this algorithm would be the simplification of complex maps, to
+  calulate the travel-time maps.</p>
+  <h1 id="definitions-and-theorems">Definitions and Theorems</h1>
+  <div class="defin">
+  <p><strong>Definition 1</strong>. <em><span
+  class="math inline">\(\mathcal{C}-\)</span>oriented polygon: a polygon
+  is called <span class="math inline">\(\mathcal{C}\)</span>-oriented if
+  the edges of the polygon are oriented in a constant number of previously
+  defined directions (the set <span
+  class="math inline">\(\mathcal{C})\)</span> <span class="citation"
+  data-cites="c_or"></span></em></p>
+  </div>
+  <figure>
+  <img src="img/rectilinear.png" id="fig:sub1" width = 400 alt="A rectilinear polygon" />
+  <figcaption aria-hidden="true">A rectilinear polygon</figcaption>
+  </figure>
+  <figure>
+  <img src="img/octolinear.png" id="fig:sub2" width = 400 alt="An octolinear polygon" />
+  <figcaption aria-hidden="true">An octolinear polygon</figcaption>
+  </figure>
+  <p><span id="fig:enter-label" label="fig:enter-label"></span></p>
+  <div class="defin">
+  <p><strong>Definition 2</strong>. <em>Linear distortion: The polygon
+  <span class="math inline">\(Q&#39;\)</span> is a linear distortion of
+  <span class="math inline">\(Q\)</span> if each eadges of <span
+  class="math inline">\(Q&#39;\)</span> can be scaled and translated s.t
+  the results is the polygon <span
+  class="math inline">\(Q\)</span>.</em></p>
+  </div>
+  <figure>
+  <img src="img/lin_disto.png" width = 400 id="fig:enter-label"
+  alt="the purple polygon is a linear distortion of the other one" />
+  <figcaption aria-hidden="true">the purple polygon is a linear distortion
+  of the other one</figcaption>
+  </figure>
+  <p>Let <span class="math inline">\(\{e_i\}\)</span> the set of edges of
+  the polygon <span class="math inline">\(Q\)</span>, <span
+  class="math inline">\(\{e&#39;_i\}\)</span> the set of edges of the
+  polygon <span class="math inline">\(Q&#39;\)</span>, let <span
+  class="math inline">\(\<b>v_i</b>\\)</span> and <span
+  class="math inline">\(\<b>v_i</b>&#39;\\)</span> the vectors
+  representing the directions and length of the edges of respectively
+  <span class="math inline">\(Q\)</span> and <span
+  class="math inline">\(Q&#39;\)</span>. The polygon <span
+  class="math inline">\(Q&#39;\)</span></p>
+  <p>is a linear distortion of <span class="math inline">\(Q\)</span> if
+  there are positive constants <span class="math inline">\(c_1, . . . ,
+  c_n\)</span> such that <span class="math inline">\(<b>v&#39;_1</b>=
+  c1.<b>v_1</b>,..., <b>v_n&#39;</b>= c.<b>v_n</b>\)</span></p>
+  <div class="defin">
+  <p><strong>Definition 3</strong>. <em>Tight hull: a simple polygon <span
+  class="math inline">\(Q\)</span> is a tight hull of another polygon
+  <span class="math inline">\(P\)</span> if <span
+  class="math inline">\(Q\)</span> contains P and there is no linear
+  distorsion of <span class="math inline">\(Q\)</span> that lies in <span
+  class="math inline">\(Q\)</span> and contains P</em></p>
+  </div>
+  <div class="defin">
+  <p><strong>Definition 4</strong>. <em>Maximally subdivided rectilinear
+  polygon: if for each vertical and horizontal ray emating from every
+  vertex of <span class="math inline">\(P\)</span> into its exterior, the
+  first contact point is a vertex.</em></p>
+  </div>
+  <figure>
+  <img src="img/max_subd.png" width = 200 id="fig:enter-label"
+  alt="A maximally subdivised part of a polygon" />
+  <figcaption aria-hidden="true">A maximally subdivised part of a
+  polygon</figcaption>
+  </figure>
+  <div class="lem">
+  <p><strong>Lemma 1</strong>. <em>Every vertex of <span
+  class="math inline">\(Q\)</span> on <span
+  class="math inline">\(P\)</span> is a vertex if the maximally subdivided
+  <span class="math inline">\(P\)</span></em></p>
+  </div>
+  <div class="defin">
+  <p><strong>Definition 5</strong>. <em>Bridge: The polyline <span
+  class="math inline">\(B\)</span> is a bridge if consists of one or two
+  incident line segments forming an "L", it starts and ends at vertices of
+  <span class="math inline">\(P\)</span>.</em></p>
+  </div>
+  <div class="defin">
+  <p><strong>Definition 6</strong>. <em>Bag: The region enclosed by <span
+  class="math inline">\(B\)</span> and the polyline of <span
+  class="math inline">\(P\)</span> connecting the same vertoces as <span
+  class="math inline">\(B\)</span> is the bag of <span
+  class="math inline">\(B\)</span></em></p>
+  </div>
+  <div class="lem">
+  <p><strong>Lemma 2</strong>. <em>The bounding box <span
+  class="math inline">\(\mathcal{B}\)</span> of P is a tight hull and any
+  other tight hull of <span class="math inline">\(P\)</span> is contained
+  in <span class="math inline">\(\mathcal{B}\)</span></em></p>
+  </div>
+  <h1 id="algorithm-explained">Algorithm explained</h1>
+  <p>This is a simplified version of the algorithm describe in the paper,
+  where they use dynamic programming to find every possible split point on
+  the bridge.</p>
+  <p>Every bridge is defined by a starting point, a bridge point and a end
+  point.</p>
+  <p>Decompose the bounding box <span
+  class="math inline">\(\mathcal{B}\)</span> into four independant
+  sub-instances <span class="math inline">\(B_1, B_2, B_3, B_4\)</span>.
+  For all the sub-instances, the algorithm recurses independantly in order
+  to split the sub-instances into to new bridges <span
+  class="math inline">\(A_1, A_2\)</span> such that they lies into the
+  previous bridge.</p>
+  <figure>
+  <img src="img/splits.png" id="fig:enter-label"
+  alt="differents way to split the current part" />
+  <figcaption aria-hidden="true">differents way to split the current
+  part</figcaption>
+  </figure>
+  <p>As seen in the above image, I distingush 4 type of splited part. The
+  first one is exactly the polygon, there is nothing the algorithm can do
+  anymore.</p>
+  <p>The second one is when the boudary does not touch any part of the
+  polygon, the boundary is then pushed against the nearest part of the
+  polygon and the spliting vertex is the vertex exactly on the
+  polygon.</p>
+  <p>In the third type of hull, the boundary touches the polygon, but it
+  does not touch the first or last vertex of the polygon. It is the first
+  point that the boundary touches that defines the split.</p>
+  <p>And the last type is when the boudaries touches the polygon on the
+  first or last vertex. The boudary is again pushed against the
+  polygon.</p>
+  <figure>
+  <img src="img/tree_final.png" id="fig:enter-label" width="600"
+  alt="An example of a sudbivision tree" />
+  <figcaption aria-hidden="true">An example of a sudbivision
+  tree</figcaption>
+  </figure>
+  <pre><code>(input : maximally subdivised simple rectilinear polygon,
+  output: tight rectilinear hull)
+      For each iteration
+          For each bridge B:
+              split the bridge into 2 new bridges [A1, A2] that does not intesect each other;
+              B[i] &lt;= [A1, A2];</code></pre>
+  <div class="thebibliography">
+  <p><span>9</span></p>
+  <p>Guting RH (1984) Dynamic C-oriented polygonal intersections
+  searching. Inf Control 63(3):143–163</p>
+  </div>
+  </body>
+  </html>
+  
